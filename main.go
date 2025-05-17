@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"flag"
+	"fmt"
 	"log"
 	"net/http"
 	"net/http/cookiejar"
@@ -10,6 +11,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/mengzhuo/cookiestxt"
 	"golang.org/x/net/publicsuffix"
 
 	"hlab-checkin/app"
@@ -24,12 +26,29 @@ func main() {
 	flag.StringVar(&cookiesFile, "file", "cookies.json", "file to store/load cookies")
 
 	flag.Parse()
-
+	err := mainApp()
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+func mainApp() error {
 	var cookies []*http.Cookie
 	if _, err := os.Stat(cookiesFile); err == nil {
-		log.Printf("getting cookies from file")
-		if buf, err := os.ReadFile(cookiesFile); err == nil {
-			json.Unmarshal(buf, &cookies)
+		if strings.HasSuffix(cookiesFile, ".txt") {
+			log.Printf("getting cookies from cookies.txt format file")
+			f, err := os.Open(cookiesFile)
+			if err != nil {
+				return fmt.Errorf("could not open cookies file: %w", err)
+			}
+			cookies, err = cookiestxt.Parse(f)
+			if err != nil {
+				return fmt.Errorf("could not parse cookies.txt format file: %w", err)
+			}
+		} else {
+			log.Printf("getting cookies from JSON")
+			if buf, err := os.ReadFile(cookiesFile); err == nil {
+				json.Unmarshal(buf, &cookies)
+			}
 		}
 	}
 	if len(cookies) == 0 {
@@ -61,4 +80,5 @@ func main() {
 	if canClaim {
 		app.Games[gameKey].Claim(client)
 	}
+	return nil
 }

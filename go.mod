@@ -4,6 +4,7 @@ go 1.23
 
 require (
 	github.com/browserutils/kooky v0.2.2
+	github.com/mengzhuo/cookiestxt v1.0.4
 	golang.org/x/net v0.26.0
 )
 

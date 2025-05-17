@@ -8,8 +8,12 @@ go build .
 
 ## Run it
 
+
 Log in on firefox or edge (chrome/chromium uses encrypted cookies, may not work)
 Alternately edit `internal/getcookie/get_cookie.go` and comment out browsers you don't want
+
+You can also get cookies from a cookies.txt style file (export from browser of choice, or from apps like curl).
+To do this, the `-file` option parameter must end in `.txt`
 
 
 ```shell
