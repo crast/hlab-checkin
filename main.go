@@ -40,6 +40,7 @@ func mainApp() error {
 			if err != nil {
 				return fmt.Errorf("could not open cookies file: %w", err)
 			}
+			defer f.Close()
 			cookies, err = cookiestxt.Parse(f)
 			if err != nil {
 				return fmt.Errorf("could not parse cookies.txt format file: %w", err)
